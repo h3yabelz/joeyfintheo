@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://i.pinimg.com/736x/a9/2b/cf/a92bcf3f551d6ff79b445ee21ee4211a.jpg') no-repeat center center fixed; /* Ganti URL ini dengan gambar latar belakang yang Anda inginkan */
+            background-size: cover;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff; /* Warna teks menjadi putih untuk kontras dengan latar belakang gelap */
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9); /* Warna latar belakang kontainer menjadi putih dengan transparansi */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            color: #333; /* Warna teks menjadi abu-abu gelap */
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333; /* Warna judul menjadi abu-abu gelap */
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555; /* Warna label menjadi abu-abu sedang */
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        form input[type="number"],
+        form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc; /* Warna border input abu-abu terang */
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #f9f9f9; /* Warna latar belakang input abu-abu terang */
+            color: #333; /* Warna teks input abu-abu gelap */
+            animation: fadeIn 2.5s ease-in-out;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #555; /* Warna latar belakang tombol abu-abu sedang */
+            color: #fff; /* Warna teks tombol putih */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #333; /* Warna latar belakang tombol saat hover abu-abu gelap */
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #333; /* Warna subjudul menjadi abu-abu gelap */
+            animation: fadeIn 3.5s ease-in-out;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0; /* Warna latar belakang item daftar abu-abu terang */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            animation: fadeIn 4s ease-in-out;
+            color: #333; /* Warna teks item daftar abu-abu gelap */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            form input[type="number"],
+            form input[type="text"],
+            button[type="submit"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Recommendation System</h1>
+
+        <form action="/recommend" method="post">
+            <label for="user_id">User ID:</label>
+            <input type="number" id="user_id" name="user_id" required>
+
+            <label for="movie_title">Movie Title:</label>
+            <input type="text" id="movie_title" name="movie_title" required>
+
+            <button type="submit">Recommend Movies</button>
+        </form>
+
+        {% if user_recommendations is not none and not user_recommendations %}
+        <div class="message">
+            <p>
+                
+            </p>
+        </div>
+        {% endif %}
+
+        {% if movie_recommendations is not none and not movie_recommendations %}
+        <div class="message">
+            <p>
+                
+            </p>
+        </div>
+        {% endif %}
+
+        {% if user_recommendations %}
+        <h2>User Recommendations:</h2>
+        <ul>
+            {% for movie in user_recommendations %}
+            <li>{{ movie }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if movie_recommendations %}
+        <h2>Similar Movies:</h2>
+        <ul>
+            {% for movie in movie_recommendations %}
+            <li>{{ movie }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
